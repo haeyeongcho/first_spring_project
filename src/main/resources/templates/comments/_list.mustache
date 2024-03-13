@@ -14,6 +14,10 @@
                         data-bs-article-id="{{articleId}}">
                     modify
                 </button>
+                <!--댓글 삭제 버튼-->
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger comment-delete-btn" data-comment-id="{{id}}">delete
+                </button>
             </div>
             <div class="card-body">
                 {{body}}
@@ -100,7 +104,7 @@
             console.log(comment);
 
             // 수정 REST API 호출 - fetch()
-            const url = "/api/comments/"+comment.id;
+            const url = "/api/comments/" + comment.id;
             fetch(url, {
                 method: "PATCH",                    // PATCH 요청
                 body: JSON.stringify(comment),      // 수정된 댓글 객체를 JSON으로 전달
@@ -114,6 +118,42 @@
 
                 // 현재 페이지를 새로고침
                 window.location.reload();
+            });
+        });
+    }
+</script>
+
+<!--댓글 삭제-->
+<script>
+    {
+        // 삭제 버튼 선택
+        const commentDeleteBtns = document.querySelectorAll(".comment-delete-btn");
+
+        // 삭제 버튼 이벤트를 처리
+        commentDeleteBtns.forEach(btn => {
+            // 각 버튼의 이벤트 처리를 등록
+            btn.addEventListener("click", (event) => {
+                // 이벤트 발생 요소를 선택
+                const commentDeleteBtn = event.srcElement;
+                // 삭제 댓글 id 가져오기
+                const commentId = commentDeleteBtn.getAttribute("data-comment-id");
+                console.log(`delete button is clicked!: ${commentId}`);
+
+                // 삭제 API 호출 및 처리
+                const url = `/api/comments/${commentId}`; // 백틱 숫자 1번 왼쪽의 키다!
+                fetch(url, {
+                    method: "DELETE"
+                }).then(response => {
+                    // 댓글 삭제 실패 처리
+                    if (!response.ok) {
+                        alert("Failed to delete comment..!");
+                        return;
+                    }
+
+                    // 삭제 성공 시, 댓글을 화면에서 지움!
+                    const target = document.querySelector(`#comments-${commentId}`)
+                    target.remove();
+                });
             });
         });
     }
