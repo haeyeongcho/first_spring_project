@@ -5,6 +5,8 @@ import com.example.first_spring_project.entity.Article;
 import com.example.first_spring_project.entity.Comment;
 import com.example.first_spring_project.repository.ArticleRepository;
 import com.example.first_spring_project.repository.CommentRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private ArticleRepository articleRepository;
 
@@ -43,6 +47,7 @@ public class CommentService {
 
     @Transactional
     public CommentDto create(Long articleId, CommentDto dto) {
+
         // 게시글 조회 및 예외 발생
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글 생성 실패! 대상 게시글이 없습니다."));
@@ -54,6 +59,7 @@ public class CommentService {
         // DTO로 변경하여 반환
         return CommentDto.createCommentDto(created);
     }
+
 
     @Transactional
     public CommentDto update(Long id, CommentDto dto) {
